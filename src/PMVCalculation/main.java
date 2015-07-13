@@ -226,10 +226,16 @@ public class main {
 		
 		int i = 0; // x index, t
 		int j = 0; // y index, rh
-		for(rh=0;rh<=100;++rh){
-			for(t=20.0;t<40.1;t+=0.1){
+		for(rh=H_lower;rh<H_upper+1;rh+=H_interval){
+			for(t=T_lower;t<T_upper+T_interval;t+=T_interval){
 				double pmv=calPMV(t,t,vel,rh,met,clo,0.0);
 				pmv=roundToDec(pmv,1);
+				
+				if (season.equals("summer")&&rh>H_comfort_upper) pmv=3.0;
+				if (rh<H_comfort_lower) pmv=-3.0;
+				if (t>T_comfort_upper) pmv=3.0;
+				if (t<T_comfort_lower) pmv=-3.0;
+				
 				PMVarray[i][j]=pmv;
 				i++;
 			}
@@ -244,7 +250,7 @@ public class main {
 		double t; // air temperature & mean radiant temperature (°C), from 20.0 to 40.0
 		double vel; // wind velocity (m/s), from 0.0 to 2.0
 		double rh; // relative humidity (%), from 0 to 100
-		double met; // metabolic rate (met), sleep-0.7, sit=1.0, stand=1.2
+		double met; // metabolic rate (met), sleep=0.7, sit=1.0, stand=1.2
 		double clo; // clothing (clo), summer=0.5, winter=1.0
 		
 		if(action.contentEquals("sleep"))
@@ -288,7 +294,7 @@ public class main {
 					double pmv=calPMV(t,t,vel,rh,met,clo,0.0);
 					pmv=roundToDec(pmv,1);
 					
-					if (rh>H_comfort_upper) pmv=3.0;
+					if (season.equals("summer")&&rh>H_comfort_upper) pmv=3.0;
 					if (rh<H_comfort_lower) pmv=-3.0;
 					if (t>T_comfort_upper) pmv=3.0;
 					if (t<T_comfort_lower) pmv=-3.0;
